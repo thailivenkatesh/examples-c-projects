@@ -12,70 +12,48 @@ Q) What is the sizeof( ) operator in a pointer?
 Q) What is the sizeof( ) operator in C?
 The sizeof( ) operator is a unary operator used to find the memory occupied by its operand in bytes.
 */
-#include<stdio.h>
-// Size of char Pointer in C
-void char_pointer()
-{
-	char c=3;
-	void *ptr = &c;
-	printf("\nThe size of the character pointer is %p bytes",sizeof((char *)ptr));
+Allocation: The string "Delhi..." is placed in the Read-Only Data Segment.
+Pointer Assignment: char *s is created on the stack and points to the start of that read-only memory.
+Illegal Access: The line *s = 'A' tries to overwrite a protected memory page.
+Signal: The Operating System detects the violation and sends a SIGSEGV signal to the process.
+Termination: The program terminates immediately without printing the string.
+Better & Safer Implementation
+To make this code functional and "segmentation-free," use arrays for modifiable strings and pass addresses to scanf.
+#include <stdio.h>
+
+// Use %zu for sizeof() as it returns size_t
+void pointer_sizes() {
+    int a = 10;
+    int *p1 = &a;
+    int **p2 = &p1;
+    
+    printf("Pointer size: %zu bytes\n", sizeof(p1));
+    printf("Double pointer size: %zu bytes\n", sizeof(p2));
 }
 
-// Size of Double Pointer in C
-void double_pointer()
-{
-	double x=3.14;
-	double *ptr=&x;
-	printf("\nThe size of the double pointer is %d bytes",sizeof(ptr));
+// Fix: Use a char array instead of a pointer to a literal
+void fix_seg() {
+    char s[] = "Delhi is the capital of India"; // Stored on the stack (writable)
+    s[0] = 'A'; 
+    printf("Modified string: %s\n", s);
 }
 
-// Size of a Pointer to Pointer or double pointer
-void pointer_pointer()
-{
-	double x=3.14;
-	double *ptr1=&x;
-	double **ptr2=&ptr1;
-	printf("\nThe size of pointer is %d bytes and pointer to pointer is %d bytes",sizeof(ptr1),sizeof(ptr2));
+// Fix: Pass the address of the variable
+void fix_scan() {
+    int p = 0;
+    printf("Enter a number: ");
+    if(scanf("%d", &p) == 1) { // Added & and return check
+        printf("You entered: %d\n", p);
+    }
 }
 
-// Pointer to an Array 
-void pointer_array()
-{
-	int arr[]={1,2,3,4,5};
-	int *ptr=arr;
-	for(int i=0;i<5;i++)
-	{
-    	     printf("\t%d ",*(ptr+i));
-	}
+int main() {
+    pointer_sizes();
+    fix_seg();
+    // fix_scan(); // Uncomment to test input
+    return 0;
 }
-
-// Size of a Pointer to an Array
-void pointer_to_array()
-{
-	int arr[]={1,2,3,4,5};
-	int *ptr=arr;
-	printf("\nThe size of a pointer to an array is %d bytes\n",sizeof(ptr));
-}
-// Writing to read-only memory.
-void seg() {
-             char *s = "Delhi is the capital of India";
-             *s = 'A';
-             printf("\n%s",s);
- } 
-void scan()
-{
-     int p = 10;
-     scanf("%d",p);
-     //return 0;
-}
-
-void main(){
-	
-	//char_pointer();
-	//double_pointer();
-	//pointer_pointer();
-	//pointer_to_array();
-	//pointer_array();
-	seg();
-	
-}
+Key Takeaways
+char *s = "...": Points to read-only memory.
+char s[] = "...": Copies the string to the stack, making it writable.
+sizeof: Use the size_t format specifier %zu for portability.
