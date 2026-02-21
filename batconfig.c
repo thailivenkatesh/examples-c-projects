@@ -165,6 +165,63 @@ int main()
 	}
     return 0;
 }
+//This version fixes the ASCII math, simplifies the extraction logic, and handles the packet verification correctly.
+#include <stdio.h>
+#include <string.h>
+
+typedef struct {
+    int min_vol_cutoff;
+    int max_vol_cutoff;
+    int max_temp_cutoff;
+    int charge_current_cutoff;
+    int dicharge_current_cutoff;
+    int CB;
+} Batteryconfig;
+
+// Helper: Converts a range of ASCII digits in an array to an integer
+int parse_segment(char *arr, int start, int len) {
+    int val = 0;
+    for (int i = 0; i < len; i++) {
+        val = val * 10 + (arr[start + i] - '0'); // Fix: Subtract '0' (48)
+    }
+    return val;
+}
+
+int main() {
+    Batteryconfig Batconfig;
+    char set_arr[24];
+
+    // Simulating incoming packet: $2985594?8724384385738#
+    // Note: I added a placeholder at index 8 and index 21 to match your offsets
+    set_arr[0] = '$';
+    set_arr[1]=50; set_arr[2]=57; set_arr[3]=56; set_arr[4]=53;    // "2985"
+    set_arr[5]=53; set_arr[6]=57; set_arr[7]=52; set_arr[8]=48;    // "5940"
+    set_arr[9]=56; set_arr[10]=55; set_arr[11]=50;                // "872"
+    set_arr[12]=53; set_arr[13]=55; set_arr[14]=51;               // "573"
+    set_arr[15]=53; set_arr[16]=55; set_arr[17]=51;               // "573"
+    set_arr[18]=51; set_arr[19]=53; set_arr[20]=48; set_arr[21]=48;// "3500"
+    set_arr[22] = '#';
+
+    // Verification and Extraction
+    if (set_arr[0] == '$' && set_arr[22] == '#') {
+        Batconfig.min_vol_cutoff          = parse_segment(set_arr, 1, 4);
+        Batconfig.max_vol_cutoff          = parse_segment(set_arr, 5, 4);
+        Batconfig.max_temp_cutoff         = parse_segment(set_arr, 9, 3);
+        Batconfig.charge_current_cutoff   = parse_segment(set_arr, 12, 3);
+        Batconfig.dicharge_current_cutoff = parse_segment(set_arr, 15, 3);
+        Batconfig.CB                      = parse_segment(set_arr, 18, 4);
+
+        printf("--- Extracted Config ---\n");
+        printf("Min Vol: %d\nMax Vol: %d\nMax Temp: %d\nCharge Cut: %d\nDischarge Cut: %d\nCB: %d\n",
+               Batconfig.min_vol_cutoff, Batconfig.max_vol_cutoff, Batconfig.max_temp_cutoff,
+               Batconfig.charge_current_cutoff, Batconfig.dicharge_current_cutoff, Batconfig.CB);
+    } else {
+        printf("Invalid Packet Format\n");
+    }
+
+    return 0;
+}
+
 /*#define EEPROM_WRITE_ADDR4	0x05
 #define EEPROM_WRITE_ADDR5	0x06
 
@@ -294,4 +351,5 @@ int main()
 	 
 	 
 	 
+
 
