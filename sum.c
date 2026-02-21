@@ -1,4 +1,4 @@
-// sum
+/*// sum
 #include <stdio.h>
 int main() {
     int n=123,sum=0,rem;
@@ -11,7 +11,7 @@ int main() {
 return 0;
 
 }
-This code calculates the sum of digits of an integer. It uses a mathematical loop to "peel off" digits one by one from the end of the number.
+/*This code calculates the sum of digits of an integer. It uses a mathematical loop to "peel off" digits one by one from the end of the number.
 Code Analysis
 Modulo Operator (%): Used to extract the last digit. 123 % 10 gives 3.
 Accumulation: The extracted digit is added to the sum variable.
@@ -39,7 +39,7 @@ Would you like to see how to solve this using recursion instead of a while loop?
 generate for negative
 To handle negative numbers, you need to ensure the digits are treated as positive values. In C, the result of the modulo operator (%) with a negative number is negative (e.g., -123 % 10 is -3).
 Here is the "segmentation-free" and negative-ready version:
-c
+*/
 #include <stdio.h>
 #include <stdlib.h> // Required for abs()
 
@@ -61,7 +61,7 @@ int main() {
     
     return 0;
 }
-Use code with caution.
+/*Use code with caution.
 
 Step-by-Step Procedure for Negative Numbers
 Normalization: Use the abs() function from stdlib.h. This turns -123 into 123.
@@ -75,4 +75,5 @@ Loop 1: rem = 3, sum = 3, temp = 12
 Loop 2: rem = 2, sum = 5, temp = 1
 Loop 3: rem = 1, sum = 6, temp = 0
 Result: 6
-Pro-tip: If you don't want to include <stdlib.h>, you can manually flip the sign with if (n < 0) n = -n; before starting the loop.
+Pro-tip: If you don't want to include <stdlib.h>, you can manually flip the sign with if (n < 0) n = -n; before starting the loop.*/
+
