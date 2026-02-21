@@ -1,0 +1,480 @@
+
+
+
+								StackVolt1 = BatPack.u16VoltCell[1][0] ;
+								StackVolt2 =   BatPack.u16VoltCell[2][0];
+								StackVolt = StackVolt1 + StackVolt2;
+
+								read_arr[370] = StackVolt/100000%10+48;
+								read_arr[371] =StackVolt/10000%10+48;
+								read_arr[372] = StackVolt/1000%10+48;
+								read_arr[373] =StackVolt/100%10+48;
+								read_arr[374] = StackVolt/10%10+48;
+								read_arr[375] = StackVolt/1%10+48;
+								//temp1
+								read_arr[385] = BatPack.u16VoltCell[1][15]/1000%10+48;
+								read_arr[386] = BatPack.u16VoltCell[1][15]/100%10+48;
+								read_arr[387] =BatPack.u16VoltCell[1][15]/10%10+48;
+								read_arr[388] = BatPack.u16VoltCell[1][15]/1%10+48;
+								
+//temp2
+							
+								read_arr[398] = BatPack.u16VoltCell[1][16]/1000%10+48;
+								read_arr[399] = BatPack.u16VoltCell[1][16]/100%10+48;
+								read_arr[400] =BatPack.u16VoltCell[1][16]/10%10+48;
+								read_arr[401] = BatPack.u16VoltCell[1][16]/1%10+48;
+								
+
+
+								
+								read_arr[411] = BatPack.u16VoltCell[1][17]/1000%10+48;
+								read_arr[412] = BatPack.u16VoltCell[1][17]/100%10+48;
+								read_arr[413] =BatPack.u16VoltCell[1][17]/10%10+48;
+								read_arr[414] = BatPack.u16VoltCell[1][17]/1%10+48;
+								
+								read_arr[424] = BatPack.u16VoltCell[1][18]/1000%10+48;
+								read_arr[425] = BatPack.u16VoltCell[1][18]/100%10+48;
+								read_arr[426] =BatPack.u16VoltCell[1][18]/10%10+48;
+								read_arr[427] = BatPack.u16VoltCell[1][18]/1%10+48;
+								
+								read_arr[437] = BatPack.u16VoltCell[1][19]/1000%10+48;
+								read_arr[438] = BatPack.u16VoltCell[1][19]/100%10+48;
+								read_arr[439] =BatPack.u16VoltCell[1][19]/10%10+48;
+								read_arr[440] = BatPack.u16VoltCell[1][19]/1%10+48;
+								
+								read_arr[450] = BatPack.u16VoltCell[1][20]/1000%10+48;
+								read_arr[451] = BatPack.u16VoltCell[1][20]/100%10+48;
+								read_arr[452] =BatPack.u16VoltCell[1][20]/10%10+48;
+								read_arr[453] = BatPack.u16VoltCell[1][20]/1%10+48;
+								
+								read_arr[463] = BatPack.u16VoltCell[1][21]/1000%10+48;
+								read_arr[464] = BatPack.u16VoltCell[1][21]/100%10+48;
+								read_arr[465] =BatPack.u16VoltCell[1][21]/10%10+48;
+								read_arr[466] = BatPack.u16VoltCell[1][21]/1%10+48;
+								
+								read_arr[476] = BatPack.u16Temp[1]/1000%10+48;
+								read_arr[477] = BatPack.u16Temp[1]/100%10+48;
+								read_arr[478] =BatPack.u16Temp[1]/10%10+48;
+								read_arr[479] = BatPack.u16Temp[1]/1%10+48;
+							
+
+							
+
+
+								read_arr[500] = 'C';
+								read_arr[501] = 'U';
+								read_arr[502] = 'R';
+								read_arr[503] = 'E';
+								read_arr[504] = 'N';
+								read_arr[505] = 'T';
+								read_arr[506] = ' ';
+								read_arr[507] = BatPack.i32RawCurrent[2]/1000%10+48;
+								read_arr[508] = BatPack.i32RawCurrent[2]/100%10+48;
+								read_arr[509] = BatPack.i32RawCurrent[2]/10%10+48;
+								read_arr[510] = BatPack.i32RawCurrent[2]/1%10+48;
+								
+
+
+
+
+							 //  LPUART_DRV_SendData(INST_LPUART2, read_arr, strlen(read_arr));
+
+								LPUART_DRV_SendData(INST_LPUART2, read_arr, 513);
+
+							
+								
+								
+								
+								
+								
+void bmsGui_toAscii()	{
+         uint8_t Power_On_Status=1;
+        //Power On Status
+         read_arr[66] = Power_On_Status+48;
+
+         uint8_t Guisoc;
+         Guisoc=(uint8_t)BatPack.SOC;
+         if(Guisoc>=100){
+         read_arr[68] = Guisoc/100%10+48;
+         read_arr[69] = Guisoc/10%10+48;
+         read_arr[70] = Guisoc/1%10+48;
+         }
+         else{
+             read_arr[68] = 48;
+             read_arr[69] = Guisoc/10%10+48;
+             read_arr[70] = Guisoc/1%10+48;
+         }
+
+        //soh
+         read_arr[72] =  BatPack.SOH/100%10+48;
+         read_arr[73] =  BatPack.SOH/10%10+48;
+         read_arr[74] =  BatPack.SOH/1%10+48;
+
+         //power
+
+        uint32_t power,tempStackVoltage;
+        float tempCurrent;
+
+        tempStackVoltage=BatPack.StackVoltage/1000;
+        tempCurrent = BatPack.i32Current;
+        if (tempCurrent > 0 ){
+        	tempCurrent=tempCurrent/1000;
+        	power =tempStackVoltage*tempCurrent;
+        }
+        else{
+        	tempCurrent=-(tempCurrent);
+        	tempCurrent=tempCurrent/1000;
+        	power =tempStackVoltage*(tempCurrent);
+        }
+
+        read_arr[76] = power/10000%10+48;
+        read_arr[77] = power/1000%10+48;
+        read_arr[78] = power/100%10+48;
+        read_arr[79] = power/10%10+48;
+        read_arr[80] = power/1%10+48;
+
+    //Current (A) (*)Standby / (+)Charging / (-)Discharge//*000//81 82 83 84 85
+
+
+         int32_t tempi32Current;
+         tempi32Current = BatPack.i32Current;
+         if (tempi32Current > 0 ){
+		 int temp= (tempi32Current);
+    	 read_arr[82] = 43; ////1//43
+    	 read_arr[83] = temp/1000%10+48;//
+    	 read_arr[84] = 46;//0
+    	 read_arr[85] = temp/100%10+48;//2
+     }
+     else {//-1029
+
+    	 int temp= -(tempi32Current);
+    	 read_arr[82] = 45;//-
+    	 read_arr[83] = temp/1000%10+48;//0
+    	 read_arr[84] = 46;//.
+    	 read_arr[85] = temp/100%10+48;//1
+
+     }
+
+    //Charge Cycle  0000//86 87 88 89 90
+
+         read_arr[87] = Batcycle/1000%10+48;
+         read_arr[88] = Batcycle/100%10+48;
+         read_arr[89] = Batcycle/10%10+48;
+         read_arr[90] = Batcycle/1%10+48;
+
+         //temp min
+        // uint8_t Temp_Min=0;
+         read_arr[92] = BatPack.TempCell[0]/10%10+48;
+         read_arr[93] = BatPack.TempCell[0]/1%10+48;
+         //temp max
+        // uint8_t Temp_Max=48;
+         read_arr[95] = BatPack.TempCell[0]/10%10+48;
+         read_arr[96] = BatPack.TempCell[0]/1%10+48;
+         //temp avg;
+         uint8_t Temp_Avg=24;
+         read_arr[98] = BatPack.TempCell[0]/10%10+48;
+         read_arr[99] = BatPack.TempCell[0]/1%10+48;
+
+         uint16_t lowestCellvoltage,highestCellvoltage,highestCellIndex,lowestCell;
+
+         bmsVoltageSorting(); /*Ascending order*/
+         bmsGetHLVoltageIndexes(&lowestCellvoltage, &highestCellvoltage,&highestCellIndex,&lowestCell);
+         //Volt Min (mV)
+         read_arr[101] = lowestCellvoltage/1000%10+48;
+         read_arr[102] = lowestCellvoltage/100%10+48;
+         read_arr[103] = lowestCellvoltage/10%10+48;
+         read_arr[104] = lowestCellvoltage/1%10+48;
+         //Volt Max (mV)
+         read_arr[106] = highestCellvoltage/1000%10+48;
+         read_arr[107] = highestCellvoltage/100%10+48;
+         read_arr[108] = highestCellvoltage/10%10+48;
+         read_arr[109] = highestCellvoltage/1%10+48;
+
+
+         uint16_t Volt_Avg = 0;
+         Volt_Avg=(lowestCellvoltage+highestCellvoltage)/2;
+         //Volt Avg (mV)
+         read_arr[111] = Volt_Avg/1000%10+48;//cell12
+         read_arr[112] = Volt_Avg/100%10+48;
+         read_arr[113] = Volt_Avg/10%10+48;
+         read_arr[114] = Volt_Avg/1%10+48;
+
+
+         //Volt Difference
+         uint8_t Volt_Difference;
+         Volt_Difference=highestCellvoltage-lowestCellvoltage;
+         read_arr[116] = 48;//cell12
+         read_arr[117] = 48;
+         read_arr[118] = Volt_Difference/10%10+48;
+         read_arr[119] = Volt_Difference/1%10+48;
+
+
+        //stack voltage
+        read_arr[121] = BatPack.StackVoltage/10000%10+48;
+        read_arr[122] = BatPack.StackVoltage/1000%10+48;
+        read_arr[123] = BatPack.StackVoltage/100%10+48;
+        read_arr[124] = BatPack.StackVoltage/10%10+48;
+        read_arr[125] = BatPack.StackVoltage/1%10+48;
+
+        //Min Volt Cutoff (SET VALUE)
+         read_arr[127] =  (Batconfig.min_vol_cutoff)/1000%10+48;//
+         read_arr[128] =  Batconfig.min_vol_cutoff/100%10+48;
+         read_arr[129] =  Batconfig.min_vol_cutoff/10%10+48;
+         read_arr[130] =  Batconfig.min_vol_cutoff/1%10+48;
+
+         //Max Volt Cutoff (SET VALUE)
+         read_arr[132] = (Batconfig.max_vol_cutoff)/1000%10+48;//
+         read_arr[133] = Batconfig.max_vol_cutoff/100%10+48;
+         read_arr[134] = Batconfig.max_vol_cutoff/10%10+48;
+         read_arr[135] = Batconfig.max_vol_cutoff/1%10+48;
+
+         //Max_Temp_Cut_Off (SET VALUE)//65
+
+         read_arr[137] = Batconfig.max_temp_cutoff/10%10+48;
+         read_arr[138] = Batconfig.max_temp_cutoff/1%10+48;
+
+        // Charge_Current_Cut_Off (SET VALUE)//100
+
+         read_arr[140] = Batconfig.chrg_cur_cutoff/100%10+48;
+         read_arr[141] = Batconfig.chrg_cur_cutoff/10%10+48;
+         read_arr[142] = Batconfig.chrg_cur_cutoff/1%10+48;
+
+        // Discharge_Current_Cut_Off (SET VALUE)//100
+
+         read_arr[144] = Batconfig.dchrg_cur_cutoff /100%10+48;
+         read_arr[145] = Batconfig.dchrg_cur_cutoff /10%10+48;
+         read_arr[146] = Batconfig.dchrg_cur_cutoff /1%10+48;
+
+        //Temp 1
+         read_arr[148] = BatPack.TempCell[0]/10%10+48;
+         read_arr[149] = BatPack.TempCell[0]/1%10+48;
+         //Temp 2
+         read_arr[151] = BatPack.TempCell[0]/10%10+48;
+         read_arr[152] = BatPack.TempCell[0]/1%10+48;
+         //Temp 3
+         read_arr[154] = BatPack.TempCell[0]/10%10+48;
+         read_arr[155] = BatPack.TempCell[0]/1%10+48;
+         //Temp 4
+         read_arr[157] = BatPack.TempCell[0]/10%10+48;
+         read_arr[158] = BatPack.TempCell[0]/1%10+48;
+         //Temp 5
+         read_arr[160] = BatPack.TempCell[0]/10%10+48;
+         read_arr[161] = BatPack.TempCell[0]/1%10+48;
+         //Temp 6
+         read_arr[163] = BatPack.TempCell[0]/10%10+48;
+         read_arr[164] = BatPack.TempCell[0]/1%10+48;
+         //pcbTemp 7
+         read_arr[166] = BatPack.TempCell[1]/10%10+48;
+         read_arr[167] = BatPack.TempCell[1]/1%10+48;
+         //ic Temp 8
+
+         uint8_t tempic=0;
+         tempic=BatPack.iCTemp/10;
+         read_arr[169] = tempic/10%10+48;
+         read_arr[170] = tempic/1%10+48;
+
+         read_arr[172] = BatPack.CellVoltages[0]/1000%10+48;//cell1
+         read_arr[173] = BatPack.CellVoltages[0]/100%10+48;
+         read_arr[174] = BatPack.CellVoltages[0]/10%10+48;
+         read_arr[175] = BatPack.CellVoltages[0]/1%10+48;
+
+         read_arr[177] = BatPack.CellVoltages[1]/1000%10+48;//cell2
+         read_arr[178] = BatPack.CellVoltages[1]/100%10+48;
+         read_arr[179] = BatPack.CellVoltages[1]/10%10+48;
+         read_arr[180] = BatPack.CellVoltages[1]/1%10+48;
+
+         read_arr[182] = BatPack.CellVoltages[2]/1000%10+48;//cell3
+         read_arr[183] = BatPack.CellVoltages[2]/100%10+48;
+         read_arr[184] = BatPack.CellVoltages[2]/10%10+48;
+         read_arr[185] = BatPack.CellVoltages[2]/1%10+48;
+
+         read_arr[187] = BatPack.CellVoltages[3]/1000%10+48;//cell4
+         read_arr[188] = BatPack.CellVoltages[3]/100%10+48;
+         read_arr[189] = BatPack.CellVoltages[3]/10%10+48;
+         read_arr[190] = BatPack.CellVoltages[3]/1%10+48;
+
+         read_arr[192] = BatPack.CellVoltages[4]/1000%10+48;//cell5
+         read_arr[193] = BatPack.CellVoltages[4]/100%10+48;
+         read_arr[194] = BatPack.CellVoltages[4]/10%10+48;
+         read_arr[195] = BatPack.CellVoltages[4]/1%10+48;
+
+         read_arr[197] = BatPack.CellVoltages[5]/1000%10+48;//cell6
+         read_arr[198] = BatPack.CellVoltages[5]/100%10+48;
+         read_arr[199] = BatPack.CellVoltages[5]/10%10+48;
+         read_arr[200] = BatPack.CellVoltages[5]/1%10+48;
+
+         read_arr[202] = BatPack.CellVoltages[6]/1000%10+48;//cell7
+         read_arr[203] = BatPack.CellVoltages[6]/100%10+48;
+         read_arr[204] = BatPack.CellVoltages[6]/10%10+48;
+         read_arr[205] = BatPack.CellVoltages[6]/1%10+48;
+
+         read_arr[207] = BatPack.CellVoltages[7]/1000%10+48;//cell8
+         read_arr[208] = BatPack.CellVoltages[7]/100%10+48;
+         read_arr[209] = BatPack.CellVoltages[7]/10%10+48;
+         read_arr[210] = BatPack.CellVoltages[7]/1%10+48;
+
+         read_arr[212] = BatPack.CellVoltages[8]/1000%10+48;//cell9
+         read_arr[213] = BatPack.CellVoltages[8]/100%10+48;
+         read_arr[214] = BatPack.CellVoltages[8]/10%10+48;
+         read_arr[215] = BatPack.CellVoltages[8]/1%10+48;
+
+         read_arr[217] = BatPack.CellVoltages[9]/1000%10+48;//cell10
+         read_arr[218] = BatPack.CellVoltages[9]/100%10+48;
+         read_arr[219] = BatPack.CellVoltages[9]/10%10+48;
+         read_arr[220] = BatPack.CellVoltages[9]/1%10+48;
+
+         read_arr[222] = BatPack.CellVoltages[10]/1000%10+48;//cell11
+         read_arr[223] = BatPack.CellVoltages[10]/100%10+48;
+         read_arr[224] = BatPack.CellVoltages[10]/10%10+48;
+         read_arr[225] = BatPack.CellVoltages[10]/1%10+48;
+
+         read_arr[227] = BatPack.CellVoltages[11]/1000%10+48;//cell12
+         read_arr[228] = BatPack.CellVoltages[11]/100%10+48;
+         read_arr[229] = BatPack.CellVoltages[11]/10%10+48;
+         read_arr[230] = BatPack.CellVoltages[11]/1%10+48;
+		 
+							   read_arr[172] = BatPack.u16VoltCell[1][14]/1000%10+48;
+							   read_arr[173] = BatPack.u16VoltCell[1][14]/100%10+48;
+							   read_arr[174] =BatPack.u16VoltCell[1][14]/10%10+48;
+							   read_arr[175] = BatPack.u16VoltCell[1][14]/1%10+48;
+							
+							   read_arr[177] = BatPack.u16VoltCell[1][13]/1000%10+48;
+							   read_arr[178] = BatPack.u16VoltCell[1][13]/100%10+48;
+							   read_arr[179] =BatPack.u16VoltCell[1][13]/10%10+48;
+							   read_arr[180] = BatPack.u16VoltCell[1][13]/1%10+48;
+					
+							   read_arr[182] = BatPack.u16VoltCell[1][12]/1000%10+48;
+							   read_arr[183] = BatPack.u16VoltCell[1][12]/100%10+48;
+							   read_arr[184] =BatPack.u16VoltCell[1][12]/10%10+48;
+							   read_arr[185] = BatPack.u16VoltCell[1][12]/1%10+48;
+							
+							   read_arr[187] = BatPack.u16VoltCell[1][11]/1000%10+48;
+							   read_arr[188] = BatPack.u16VoltCell[1][11]/100%10+48;
+							   read_arr[189] =BatPack.u16VoltCell[1][11]/10%10+48;
+							   read_arr[189] = BatPack.u16VoltCell[1][11]/1%10+48;
+							
+							   read_arr[59] = BatPack.u16VoltCell[1][10]/1000%10+48;
+							   read_arr[60] = BatPack.u16VoltCell[1][10]/100%10+48;
+							   read_arr[61] =BatPack.u16VoltCell[1][10]/10%10+48;
+							   read_arr[62] = BatPack.u16VoltCell[1][10]/1%10+48;
+						
+								read_arr[72] = BatPack.u16VoltCell[1][9]/1000%10+48;
+								read_arr[73] = BatPack.u16VoltCell[1][9]/100%10+48;
+								read_arr[74] =BatPack.u16VoltCell[1][9]/10%10+48;
+								read_arr[75] = BatPack.u16VoltCell[1][9]/1%10+48;
+					
+								read_arr[85] = BatPack.u16VoltCell[1][8]/1000%10+48;
+								read_arr[86] = BatPack.u16VoltCell[1][8]/100%10+48;
+								read_arr[87] =BatPack.u16VoltCell[1][8]/10%10+48;
+								read_arr[88] = BatPack.u16VoltCell[1][8]/1%10+48;
+						
+								read_arr[98] = BatPack.u16VoltCell[1][7]/1000%10+48;
+								read_arr[99] = BatPack.u16VoltCell[1][7]/100%10+48;
+								read_arr[100] =BatPack.u16VoltCell[1][7]/10%10+48;
+								read_arr[101] = BatPack.u16VoltCell[1][7]/1%10+48;
+						
+								read_arr[111] = BatPack.u16VoltCell[1][6]/1000%10+48;
+								read_arr[112] = BatPack.u16VoltCell[1][6]/100%10+48;
+								read_arr[113] = BatPack.u16VoltCell[1][6]/10%10+48;
+								read_arr[114] = BatPack.u16VoltCell[1][6]/1%10+48;
+							
+								read_arr[124] = BatPack.u16VoltCell[1][5]/1000%10+48;
+								read_arr[125] = BatPack.u16VoltCell[1][5]/100%10+48;
+								read_arr[126] =BatPack.u16VoltCell[1][5]/10%10+48;
+								read_arr[127] = BatPack.u16VoltCell[1][5]/1%10+48;
+								
+								read_arr[137] = BatPack.u16VoltCell[1][4]/1000%10+48;
+								read_arr[138] = BatPack.u16VoltCell[1][4]/100%10+48;
+								read_arr[139] =BatPack.u16VoltCell[1][4]/10%10+48;
+								read_arr[140] = BatPack.u16VoltCell[1][4]/1%10+48;
+							
+								read_arr[150] = BatPack.u16VoltCell[1][3]/1000%10+48;
+								read_arr[151] = BatPack.u16VoltCell[1][3]/100%10+48;
+								read_arr[152] =BatPack.u16VoltCell[1][3]/10%10+48;
+								read_arr[153] = BatPack.u16VoltCell[1][3]/1%10+48;
+							
+								read_arr[163] = BatPack.u16VoltCell[1][2]/1000%10+48;
+								read_arr[164] = BatPack.u16VoltCell[1][2]/100%10+48;
+								read_arr[165] =BatPack.u16VoltCell[1][2]/10%10+48;
+								read_arr[166] = BatPack.u16VoltCell[1][2]/1%10+48;
+							
+								read_arr[176] = BatPack.u16VoltCell[1][1]/1000%10+48;
+								read_arr[177] = BatPack.u16VoltCell[1][1]/100%10+48;
+								read_arr[178] =BatPack.u16VoltCell[1][1]/10%10+48;
+								read_arr[179] = BatPack.u16VoltCell[1][1]/1%10+48;
+								read_arr[180] ='\r' ;
+								read_arr[181] ='\n';
+
+
+						
+								read_arr[189] = BatPack.u16VoltCell[2][14]/1000%10+48;
+								read_arr[190] = BatPack.u16VoltCell[2][14]/100%10+48;
+								read_arr[191] =BatPack.u16VoltCell[2][14]/10%10+48;
+								read_arr[192] = BatPack.u16VoltCell[2][14]/1%10+48;
+								
+								read_arr[202] = BatPack.u16VoltCell[2][13]/1000%10+48;
+								read_arr[203] = BatPack.u16VoltCell[2][13]/100%10+48;
+								read_arr[204] =BatPack.u16VoltCell[2][13]/10%10+48;
+								read_arr[205] = BatPack.u16VoltCell[2][13]/1%10+48;
+						
+								read_arr[215] = BatPack.u16VoltCell[2][12]/1000%10+48;
+								read_arr[216] = BatPack.u16VoltCell[2][12]/100%10+48;
+								read_arr[217] =BatPack.u16VoltCell[2][12]/10%10+48;
+								read_arr[218] = BatPack.u16VoltCell[2][12]/1%10+48;
+							
+								read_arr[228] = BatPack.u16VoltCell[2][11]/1000%10+48;
+								read_arr[229] = BatPack.u16VoltCell[2][11]/100%10+48;
+								read_arr[230] =BatPack.u16VoltCell[2][11]/10%10+48;
+								read_arr[231] = BatPack.u16VoltCell[2][11]/1%10+48;
+							
+								read_arr[241] = BatPack.u16VoltCell[2][10]/1000%10+48;
+								read_arr[242] = BatPack.u16VoltCell[2][10]/100%10+48;
+								read_arr[243] =BatPack.u16VoltCell[2][10]/10%10+48;
+								read_arr[244] = BatPack.u16VoltCell[2][10]/1%10+48;
+								
+								read_arr[254] = BatPack.u16VoltCell[2][9]/1000%10+48;
+								read_arr[255] = BatPack.u16VoltCell[2][9]/100%10+48;
+								read_arr[256] =BatPack.u16VoltCell[2][9]/10%10+48;
+								read_arr[257] = BatPack.u16VoltCell[2][9]/1%10+48;
+					
+								read_arr[267] = BatPack.u16VoltCell[2][8]/1000%10+48;
+								read_arr[268] = BatPack.u16VoltCell[2][8]/100%10+48;
+								read_arr[269] =BatPack.u16VoltCell[2][8]/10%10+48;
+								read_arr[270] = BatPack.u16VoltCell[2][8]/1%10+48;
+							
+								read_arr[280] = BatPack.u16VoltCell[2][7]/1000%10+48;
+								read_arr[281] = BatPack.u16VoltCell[2][7]/100%10+48;
+								read_arr[282] =BatPack.u16VoltCell[2][7]/10%10+48;
+								read_arr[283] = BatPack.u16VoltCell[2][7]/1%10+48;
+							
+								read_arr[293] = BatPack.u16VoltCell[2][6]/1000%10+48;
+								read_arr[294] = BatPack.u16VoltCell[2][6]/100%10+48;
+								read_arr[295] =BatPack.u16VoltCell[2][6]/10%10+48;
+								read_arr[296] = BatPack.u16VoltCell[2][6]/1%10+48;
+						
+								read_arr[306] = BatPack.u16VoltCell[2][5]/1000%10+48;
+								read_arr[307] = BatPack.u16VoltCell[2][5]/100%10+48;
+								read_arr[308] =BatPack.u16VoltCell[2][5]/10%10+48;
+								read_arr[309] = BatPack.u16VoltCell[2][5]/1%10+48;
+								
+								read_arr[319] = BatPack.u16VoltCell[2][4]/1000%10+48;
+								read_arr[320] = BatPack.u16VoltCell[2][4]/100%10+48;
+								read_arr[321] =BatPack.u16VoltCell[2][4]/10%10+48;
+								read_arr[322] = BatPack.u16VoltCell[2][4]/1%10+48;
+							
+								read_arr[332] = BatPack.u16VoltCell[2][3]/1000%10+48;
+								read_arr[333] = BatPack.u16VoltCell[2][3]/100%10+48;
+								read_arr[334] =BatPack.u16VoltCell[2][3]/10%10+48;
+								read_arr[335] = BatPack.u16VoltCell[2][3]/1%10+48;
+							
+								read_arr[345] = BatPack.u16VoltCell[2][2]/1000%10+48;
+								read_arr[346] = BatPack.u16VoltCell[2][2]/100%10+48;
+								read_arr[347] =BatPack.u16VoltCell[2][2]/10%10+48;
+								read_arr[348] = BatPack.u16VoltCell[2][2]/1%10+48;
+						
+								read_arr[358] = BatPack.u16VoltCell[2][1]/1000%10+48;
+								read_arr[359] = BatPack.u16VoltCell[2][1]/100%10+48;
+								read_arr[360] =BatPack.u16VoltCell[2][1]/10%10+48;
+								read_arr[361] = BatPack.u16VoltCell[2][1]/1%10+48;
+								
+    }
