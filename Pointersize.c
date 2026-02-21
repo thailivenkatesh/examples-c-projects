@@ -11,14 +11,14 @@ Q) What is the sizeof( ) operator in a pointer?
 
 Q) What is the sizeof( ) operator in C?
 The sizeof( ) operator is a unary operator used to find the memory occupied by its operand in bytes.
-*/
+
 Allocation: The string "Delhi..." is placed in the Read-Only Data Segment.
 Pointer Assignment: char *s is created on the stack and points to the start of that read-only memory.
 Illegal Access: The line *s = 'A' tries to overwrite a protected memory page.
 Signal: The Operating System detects the violation and sends a SIGSEGV signal to the process.
 Termination: The program terminates immediately without printing the string.
 Better & Safer Implementation
-To make this code functional and "segmentation-free," use arrays for modifiable strings and pass addresses to scanf.
+To make this code functional and "segmentation-free," use arrays for modifiable strings and pass addresses to scanf.*/
 #include <stdio.h>
 
 // Use %zu for sizeof() as it returns size_t
@@ -57,3 +57,4 @@ Key Takeaways
 char *s = "...": Points to read-only memory.
 char s[] = "...": Copies the string to the stack, making it writable.
 sizeof: Use the size_t format specifier %zu for portability.
+
