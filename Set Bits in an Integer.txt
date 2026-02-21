@@ -1,47 +1,44 @@
-/*This code implements Brian Kernighan’s Algorithm. It is an efficient way to count the number of set bits (1s) in the binary representation of an integer.
-Code Analysis
-The Bitwise Trick (n & (n-1)): This is the heart of the code. In binary, subtracting 1 from a number flips all the bits after the rightmost set bit (including the bit itself). When you AND this with the original n, it clears the lowest set bit.
-Efficiency: Unlike a standard loop that checks every single bit (e.g., 32 times for an int), this loop only runs once for every '1' present in the number.
-Complexity: 
-, where 
- is the number of set bits.
-Step-by-Step Procedure
-Using the input n = 3:
-Step 1: Initial State
-n = 3 (Binary: 0011)
-count = 0
-Step 2: First Iteration
-Calculate n - 1: 
- (Binary: 0010)
-Perform n & (n-1): 0011 & 0010 = 0010 (Decimal: 2)
-n is now 2.
-Increment count to 1.
-Step 3: Second Iteration
-Calculate n - 1: 
- (Binary: 0001)
-Perform n & (n-1): 0010 & 0001 = 0000 (Decimal: 0)
-n is now 0.
-Increment count to 2.
-Step 4: Termination
-The while(n != 0) condition is now false.
-Print count.
-Final Output: 2
-Why use this?
-If you have a 64-bit integer like 1000000000000000 (which has only one bit set), a normal loop would run 60+ times. This algorithm finishes in exactly one step.
-Pro-Tip: In modern C (C23) or using GCC/Clang, you can also use the built-in function __builtin_popcount(n) to get the same result even faster using CPU-specific instructions.*/
-**************/
-#include<stdio.h>
-int main(){
-int n=3,count=0;
-while(n!=0)
-{
-    n=n&(n-1);
-    count++;
-}
-printf("%d",count);
-        return 0;
+#include <stdio.h>
+#include <stdint.h>
+#include <stdbool.h>
 
-
+/**
+ * Brian Kernighan’s Algorithm
+ * Returns the number of set bits (1s) in a 32-bit integer.
+ */
+int count_set_bits(uint32_t n) {
+    int count = 0;
+    while (n > 0) {
+        n &= (n - 1); // Clears the lowest set bit
+        count++;
+    }
+    return count;
 }
 
+/**
+ * Power of Two Check
+ * Returns true if n is a power of 2 (e.g., 1, 2, 4, 8, 16...).
+ */
+bool is_power_of_two(uint32_t n) {
+    // A power of two must be > 0 and have exactly one set bit
+    return (n > 0) && ((n & (n - 1)) == 0);
+}
 
+int main() {
+    uint32_t num = 8;
+
+    printf("Analysis for Number: %u\n", num);
+    printf("--------------------------\n");
+    
+    // 1. Count Set Bits
+    printf("Total Set Bits (1s): %d\n", count_set_bits(num));
+
+    // 2. Check Power of Two
+    if (is_power_of_two(num)) {
+        printf("Result: %u is a power of 2.\n", num);
+    } else {
+        printf("Result: %u is NOT a power of 2.\n", num);
+    }
+
+    return 0;
+}
